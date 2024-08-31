@@ -1,5 +1,6 @@
 "use client"
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -7,6 +8,7 @@ const AuthSign = () => {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     const [isLogin, setIsLogin] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         console.log("username:", username);
@@ -21,6 +23,14 @@ const AuthSign = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(username == "" || username == undefined){
+            toast.error("Username tidak boleh kosong");
+            return;
+        }
+        if(password == "" || password == undefined){
+            toast.error("Password tidak boleh kosong");
+            return;
+        }
         let data = JSON.stringify({
             "username": username,
             "password": password
@@ -43,6 +53,7 @@ const AuthSign = () => {
                     toast.success("Berhasil login");
                     localStorage.setItem("accessToken", response.data?.accessToken);
                     setIsLogin(true);
+                    router.push("/user/profile");
                 }
             })
             .catch((error) => {
